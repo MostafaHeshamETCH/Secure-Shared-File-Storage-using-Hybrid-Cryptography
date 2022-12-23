@@ -57,7 +57,7 @@ def AESAlgo(data: bytes, key: bytes):
 def DESAlgo(filename, key: bytes):
     key0 = DesKey(key)
     raw = readPlainText(filename)
-    encryptedData = key0.encrypt(raw)
+    encryptedData = key0.encrypt(raw, padding=True)
     writeEncryptedText(filename, encryptedData)
 
 

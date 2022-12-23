@@ -72,7 +72,7 @@ def AESCCMAlgo(filename, key, nonce):
 def DESAlgo(filename, key):
     key0 = DesKey(key)
     raw = readEncryptedText(filename)
-    plainText = key0.decrypt(raw)
+    plainText = key0.decrypt(raw, padding=True)
     writePlainText(filename, plainText)
 
 
@@ -103,4 +103,4 @@ def decrypter():
         elif index % 4 == 2:
             AESGCMAlgo(files[index], key_3, nonce12)
         else:
-            AESCCMAlgo(files[index], key_4, nonce13)
+            DESAlgo(files[index], key_4)

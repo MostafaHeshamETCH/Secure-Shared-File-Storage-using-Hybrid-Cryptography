@@ -1,10 +1,9 @@
 import os
 
-from cryptography.fernet import Fernet, MultiFernet
+from cryptography.fernet import Fernet
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.asymmetric import rsa
-from cryptography.hazmat.primitives.ciphers.aead import (
-    AESCCM, AESGCM, ChaCha20Poly1305)
+from cryptography.hazmat.primitives.ciphers.aead import (AESGCM, ChaCha20Poly1305)
 from des import DesKey
 import tools
 
@@ -55,17 +54,10 @@ def AESAlgo(data: bytes, key: bytes):
 
 
 def DESAlgo(filename, key: bytes):
-    key0 = DesKey(key)
+    f = DesKey(key)
     raw = readPlainText(filename)
-    encryptedData = key0.encrypt(raw, padding=True)
-    writeEncryptedText(filename, encryptedData)
-
-
-def AESAlgoRotated(filename, key1: bytes, key2: bytes):
-    f = MultiFernet([Fernet(key1), Fernet(key2)])
-    raw = readPlainText(filename)
-    encryptedData = f.encrypt(raw)
-    writeEncryptedText(filename, encryptedData)
+    secret_data = f.encrypt(raw, padding=True)
+    writeEncryptedText(filename, secret_data)
 
 
 def ChaChaAlgo(filename, key: bytes, nonce: bytes):
@@ -85,39 +77,24 @@ def AESGCMAlgo(filename, key: bytes, nonce: bytes):
     writeEncryptedText(filename, encryptedData)
 
 
-def AESCCMAlgo(filename, key: bytes, nonce: bytes):
-    aad = b"authenticated but unencrypted data"
-    aesccm = AESCCM(key)
-    raw = readPlainText(filename)
-    encryptedData = aesccm.encrypt(nonce, raw, aad)
-    writeEncryptedText(filename, encryptedData)
-
-
 def encrypter():
     tools.empty_folder('key')
     tools.empty_folder('encrypted')
     key_1 = Fernet.generate_key()
-    key_1_1 = Fernet.generate_key()
-    key_1_2 = Fernet.generate_key()
     key_2 = ChaCha20Poly1305.generate_key()
     key_3 = AESGCM.generate_key(bit_length=128)
-    key_4 = AESCCM.generate_key(bit_length=128)
-    nonce13 = os.urandom(13)
-    nonce12 = os.urandom(12)
+    key_4 = os.urandom(8)
     files = sorted(tools.list_dir('files'))
+    nonce12 = os.urandom(12)
     for index in range(0, len(files)):
-        if index % 4 == 0:
-            AESAlgoRotated(files[index], key_1_1, key_1_2)
-        elif index % 4 == 1:
+        if index % 3 == 0:
+            AESGCMAlgo(files[index], key_3, nonce12)
+        elif index % 3 == 1:
             ChaChaAlgo(files[index], key_2, nonce12)  # ChaCha Encryption Algorithm
-        elif index % 4 == 2:
-            AESGCMAlgo(files[index], key_3, nonce12)   # AES Encryption Algorithm
         else:
             DESAlgo(files[index], key_4)
 
-    secret_information = key_1_1 + b":::::" + key_1_2 + b":::::" + key_2 + \
-                         b":::::" + key_3 + b":::::" + key_4 + b":::::" + \
-                         nonce12 + b":::::" + nonce13  # All the keys
+    secret_information = key_2 + b"," + key_3 + b"," + key_4 + b"," + nonce12
 
     # Encrypting all the keys with algo1 using key_1
     AESAlgo(secret_information, key_1)

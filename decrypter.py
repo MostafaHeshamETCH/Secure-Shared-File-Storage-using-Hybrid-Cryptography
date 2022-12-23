@@ -38,13 +38,6 @@ def AESAlgo(key):
     return secret_data
 
 
-def AESAlgoRotated(filename, key1, key2):
-    f = MultiFernet([Fernet(key1), Fernet(key2)])
-    encryptedText = readEncryptedText(filename)
-    plainText = f.decrypt(encryptedText)
-    writePlainText(filename, plainText)
-
-
 def ChaChaAlgo(filename, key, nonce):
     aad = b"authenticated but unencrypted data"
     chacha = ChaCha20Poly1305(key)
@@ -58,14 +51,6 @@ def AESGCMAlgo(filename, key, nonce):
     aesgcm = AESGCM(key)
     encryptedText = readEncryptedText(filename)
     plainText = aesgcm.decrypt(nonce, encryptedText, aad)
-    writePlainText(filename, plainText)
-
-
-def AESCCMAlgo(filename, key, nonce):
-    aad = b"authenticated but unencrypted data"
-    aesccm = AESCCM(key)
-    encryptedText = readEncryptedText(filename)
-    plainText = aesccm.decrypt(nonce, encryptedText, aad)
     writePlainText(filename, plainText)
 
 
@@ -86,21 +71,16 @@ def decrypter():
         key_1 = key_1 + line
     public_key.close()
     secret_information = AESAlgo(key_1)
-    list_information = secret_information.split(b':::::')
-    key_1_1 = list_information[0]
-    key_1_2 = list_information[1]
-    key_2 = list_information[2]
-    key_3 = list_information[3]
-    key_4 = list_information[4]
-    nonce12 = list_information[5]
-    nonce13 = list_information[6]
+    list_information = secret_information.split(b',')
+    key_2 = list_information[0]
+    key_3 = list_information[1]
+    key_4 = list_information[2]
+    nonce12 = list_information[3]
     files = sorted(tools.list_dir('encrypted'))
     for index in range(0, len(files)):
-        if index % 4 == 0:
-            AESAlgoRotated(files[index], key_1_1, key_1_2)
-        elif index % 4 == 1:
-            ChaChaAlgo(files[index], key_2, nonce12)
-        elif index % 4 == 2:
+        if index % 3 == 0:
             AESGCMAlgo(files[index], key_3, nonce12)
+        elif index % 3 == 1:
+            ChaChaAlgo(files[index], key_2, nonce12)
         else:
             DESAlgo(files[index], key_4)

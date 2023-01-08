@@ -5,44 +5,41 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="../static/" type="image" />
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="../static/styles/tailwind.min.css"
-    />
+    
     <title>Secure Shared File Storage using Hybrid Cryptography</title>
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body
-    class="flex tracking-wider text-center justify-center overflow-x-hidden items-center h-screen"
-    style="background-color: black; color: #f2ebe9"
+    class="cont"
   >
     <div
-      class="rounded-2xl w-2/3 mx-20 hover:shadow-2xl transform duration-300"
-      style="background-color: transparent"
+      
     >
-      <div class="m-10 sm:mx-20 lg:mx-40">
+      <div >
         <form
           action="/download_data"
           method="POST"
           enctype="multipart/form-data"
+          style="width:fit-content;"
         >
-                <input type="file" name="file" required class="w-56 mt-4 mb-10" />
-                <div>
+                <input type="file" name="file" required class="fileInput" style="border: none;" />
+                <div  >
                   <button
                     type="submit"
-                    class="py-2 px-4 border transform duration-200 hover:text-black hover:bg-gray-100 hover:-translate-y-1"
+                    class="primary_btn"
                   >
                     Upload
                   </button>
                   <a href="/home"
                     ><button
                       type="button"
-                      class="py-2 px-4 sm:my-0 sm:ml-10 border transform duration-200 text-black hover:text-white hover:bg-transparent bg-gray-100 hover:-translate-y-1"
+                      class="secondary_btn"
                     >
                       Back to Home
                     </button></a
                   >
                 </div>
+                <input placeholder="Enter key" class="fileInput" type="url" id="key" name="key" />
         </form>
         <br />
       </div>

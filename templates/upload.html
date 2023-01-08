@@ -6,41 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link rel="icon" href="../static/" type="image"/>
     <title>Secure Shared File Storage using Hybrid Cryptography</title>
-    <link rel="stylesheet" href="styles.css"/>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="../static/styles/styles.css"
+    />
 </head>
 <body class="cont">
 <div>
     <div>
         <form action="/data" method="POST" enctype="multipart/form-data">
-            <<<<<<< HEAD
-            <input type="file" name="file" required class="w-56 mt-4 mb-10"/>
-            <div>
-                <a href="upload"
-                >
-                    <button
-                            type="submit"
-                            class="py-2 px-4 border transform duration-200 hover:text-black hover:bg-gray-100 hover:-translate-y-1"
-                    >
-                        Upload
-                    </button>
-                </a
-                >
-                <a href="/home"
-                >
-                    <button
-                            type="button"
-                            class="py-2 px-4 mt-4 sm:my-0 sm:ml-10 border transform duration-200 text-black hover:text-white hover:bg-transparent bg-gray-100 hover:-translate-y-1"
-                    >
-                        Back to Home
-                    </button>
-                </a
-                >
-            </div>
-            <br/>
-            <br/>
             <input
                     type="file"
-                    name="publicKey"
+                    name="file"
                     required
                     class="fileInput"
                     style="border: none"
@@ -59,7 +37,7 @@
                 </a
                 >
             </div>
-            <input placeholder="Enter key" class="fileInput" type="url" id="key" name="key"/>
+            <input placeholder="Enter public key" class="fileInput" type="text" id="key" name="publicKey"/>
         </form>
     </div>
 </div>

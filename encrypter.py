@@ -38,18 +38,16 @@ def rsaKeyPairGeneration():
     return {"private": private_key, "public": public_key}
 
 
-def RSAAlgo(data: bytes, my_private_key, your_public_key):
+def RSAAlgo2(data: bytes, my_private_key, your_public_key):
     encryptedKeys = my_private_key.encrypt(data)
     encryptedKeys = your_public_key.encrypt(encryptedKeys)
     # All keys stored in store_in_me.enc encrypted with my_private_key as well as your_public_key
     writeEncryptedKeys(encryptedKeys)
 
 
-# AES in CBC mode with a 128-bit key for encryption; using PKCS7 padding.
-def AESAlgo(data: bytes, key: bytes):
+def RSAAlgo(data: bytes, key: bytes):
     f = Fernet(key)
     secret_data = f.encrypt(data)
-    # All keys stored in store_in_me.enc encrypted with key_1
     writeEncryptedKeys(secret_data)
 
 
@@ -86,6 +84,11 @@ def encrypter(public_key):
     key_4 = os.urandom(8)
     files = sorted(utilities.list_dir('files'))
     nonce12 = os.urandom(12)
+
+    keys = rsaKeyPairGeneration()
+    print(keys["private"])
+    print(keys["public"])
+
     for index in range(0, len(files)):
         if index % 3 == 0:
             AESGCMAlgo(files[index], key_3, nonce12)
@@ -95,9 +98,9 @@ def encrypter(public_key):
             DESAlgo(files[index], key_4)
 
     secret_information = key_2 + b"," + key_3 + b"," + key_4 + b"," + nonce12
-    print(public_key + " -------------------in Encrypt")
+
     # Encrypting all the keys with algo1 using key_1
-    AESAlgo(secret_information, key_1)
+    RSAAlgo(secret_information, key_1)
     public_key = open("./key/secret_upload_key.pem", "wb")
     public_key.write(key_1)  # key_1 stored in Main_Key.pem
     public_key.close()

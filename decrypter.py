@@ -31,7 +31,7 @@ def writePlainText(filename, plainText):
     target_file.close()
 
 
-def AESAlgo(key):
+def RCAAlgo(key):
     f = Fernet(key)
     encryptedKeys = readEncryptedKeys()
     secret_data = f.decrypt(encryptedKeys)
@@ -70,14 +70,12 @@ def decrypter(private_key):
     for line in public_key:
         key_1 = key_1 + line
     public_key.close()
-    secret_information = AESAlgo(key_1)
-    list_information = secret_information.split(b',')
-    key_2 = list_information[0]
-    key_3 = list_information[1]
-    key_4 = list_information[2]
-    nonce12 = list_information[3]
-
-    print(private_key + "-------------Decrypt")
+    secret_information = RCAAlgo(key_1)
+    key_list = secret_information.split(b',')
+    key_2 = key_list[0]
+    key_3 = key_list[1]
+    key_4 = key_list[2]
+    nonce12 = key_list[3]
 
     files = sorted(utilities.list_dir('encrypted'))
     for index in range(0, len(files)):

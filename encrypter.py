@@ -5,7 +5,7 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives.ciphers.aead import (AESGCM, ChaCha20Poly1305)
 from des import DesKey
-import tools
+import utilities
 
 
 def readPlainText(filename) -> bytes:
@@ -77,14 +77,14 @@ def AESGCMAlgo(filename, key: bytes, nonce: bytes):
     writeEncryptedText(filename, encryptedData)
 
 
-def encrypter():
-    tools.empty_folder('key')
-    tools.empty_folder('encrypted')
-    key_1 = Fernet.generate_key()
+def encrypter(public_key):
+    utilities.empty_folder('key')
+    utilities.empty_folder('encrypted')
+    key_1 = Fernet.generate_key()  # the downloaded public key
     key_2 = ChaCha20Poly1305.generate_key()
     key_3 = AESGCM.generate_key(bit_length=128)
     key_4 = os.urandom(8)
-    files = sorted(tools.list_dir('files'))
+    files = sorted(utilities.list_dir('files'))
     nonce12 = os.urandom(12)
     for index in range(0, len(files)):
         if index % 3 == 0:
@@ -95,10 +95,10 @@ def encrypter():
             DESAlgo(files[index], key_4)
 
     secret_information = key_2 + b"," + key_3 + b"," + key_4 + b"," + nonce12
-
+    print(public_key + " -------------------in Encrypt")
     # Encrypting all the keys with algo1 using key_1
     AESAlgo(secret_information, key_1)
     public_key = open("./key/secret_upload_key.pem", "wb")
     public_key.write(key_1)  # key_1 stored in Main_Key.pem
     public_key.close()
-    tools.empty_folder('files')
+    utilities.empty_folder('files')

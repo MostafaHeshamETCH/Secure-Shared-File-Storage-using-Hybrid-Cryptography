@@ -2,7 +2,7 @@ from cryptography.fernet import Fernet, MultiFernet
 from cryptography.hazmat.primitives.ciphers.aead import (AESCCM, AESGCM,
                                                          ChaCha20Poly1305)
 from des import DesKey
-import tools
+import utilities
 
 
 def readEncryptedKeys():
@@ -61,10 +61,10 @@ def DESAlgo(filename, key):
     writePlainText(filename, plainText)
 
 
-def decrypter():
-    tools.empty_folder('files')
+def decrypter(private_key):
+    utilities.empty_folder('files')
     key_1 = b""
-    list_directory = tools.list_dir('key')
+    list_directory = utilities.list_dir('key')
     filename = './key/' + list_directory[0]
     public_key = open(filename, "rb")
     for line in public_key:
@@ -76,7 +76,10 @@ def decrypter():
     key_3 = list_information[1]
     key_4 = list_information[2]
     nonce12 = list_information[3]
-    files = sorted(tools.list_dir('encrypted'))
+
+    print(private_key + "-------------Decrypt")
+
+    files = sorted(utilities.list_dir('encrypted'))
     for index in range(0, len(files)):
         if index % 3 == 0:
             AESGCMAlgo(files[index], key_3, nonce12)
